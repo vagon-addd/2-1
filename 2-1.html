@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-1</title>
+    <style>
+    .wrapper{
+        margin: 25px auto 50px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    body{
+        background-color:rgb(184, 255, 231);
+    }
+    h1{
+        text-align: center;
+        font-size: 60px;
+        margin: 20px 0px 50px 0px;
+    }
+    .main{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .numbers{
+        text-align: center;
+        font-size: 50px;
+        width: auto;
+        border: 3px solid #000000;
+        border-radius: 5px;
+    }
+    .countB{
+        display: flex;
+        background-color: greenyellow;
+        height: 50px;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+    .countB:hover{
+        background-color: green;
+        color: white;
+    }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Введите дату вашего рождения</h1>
+        <div class="main">
+            <input type="text" id="day" class="numbers" placeholder="День">
+            <input type="text" id="month" class="numbers" placeholder="Месяц">
+            <input type="text" id="year" class="numbers" placeholder="Год">
+            <button class = "countB" id="btn" onclick="calculate()">Расчитать</button>
+        </div>
+    </div>
+
+    <script>
+        const dates = {
+            '0': [" *** " , "*   *" , "*   *" , "*   *" , " *** "],
+            '1': ["  *  " , " **  " , "  *  " , "  *  " , " *** "],
+            '2': [" *** " , "*   *" , "   * " , "  *  " , "*****"],
+            '3': [" *** " , "*   *" , "  ** " , "*   *" , " *** "],
+            '4': ["*   *" , "*   *" , "*****" , "    *" , "    *"],
+            '5': ["*****" , "*    " , "**** " , "    *" , "**** "],
+            '6': [" *** " , "*    " , "**** " , "*   *" , " *** "],
+            '7': ["*****" , "    *" , "   * " , "  *  " , " *   "],
+            '8': [" *** " , "*   *" , " *** " , "*   *" , " *** "],
+            '9': [" *** " , "*   *" , " ****" , "    *" , " *** "]
+        };
+
+        function weekw(day, month, year){
+            let date = new Date(year, month - 1, day);
+            let weekWord = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            return weekWord[date.getDay()];
+        }
+
+        function vesYear(year){
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function age(day,month,year){
+            let seg = new Date();
+            let birth = new Date(year, month - 1, day);
+            let age = seg.getFullYear() - birth.getFullYear();
+            let monthraz = seg.getMonth() - birth.getMonth();
+
+            if (monthraz < 0 || (monthraz === 0 && seg.getDate() < birth.getDate())){
+                age--;
+            }
+            return age;
+        }
+
+        function showDigital(number){
+            let numstr = number.toString();
+            let result = ["", "", "", "", ""];
+            for(let i = 0; i < numstr.length; i++){
+                let digit = dates[numstr[i]];
+                if(!digit) continue;
+                
+                for (let row = 0; row < 5; row++){
+                    result[row] += digit[row];
+                    if (i < numstr.length - 1){
+                        result[row] += "  ";
+                    }
+                }
+            }
+            let output = "";
+            for (let row = 0; row < 5; row++) {
+                output += result[row] + "\n";
+            }
+            return output;
+        }
+
+        function calculate(){
+            let day = parseInt(document.getElementById("day").value);
+            let month = parseInt(document.getElementById("month").value);
+            let year = parseInt(document.getElementById("year").value);
+            if (isNaN(day) || isNaN(month) || isNaN(year)){
+                console.log("Ошибка: В поля нужно вводить только цифры");
+                return;
+            }
+
+            let date = new Date(year, month - 1, day);
+            if (date.getDate() != day || date.getMonth() != month - 1) {
+                console.log("Ошибка! Неверная дата");
+                return;
+            }
+
+            let weekDay = weekw(day, month, year);
+            let vesY = vesYear(year) ? "Да" : "Нет";
+            let agee = age(day, month, year);
+
+            console.log("День недели: " + weekDay);
+            console.log("Високосный год: " + vesY);
+            console.log("Возраст: " + agee);
+
+            let daystr = day.toString().padStart(2, '0');
+            let monthstr = month.toString().padStart(2, '0');
+            let yearstr = year.toString();
+            
+            console.log(showDigital(daystr));
+            console.log(showDigital(monthstr));
+            console.log(showDigital(yearstr));
+        }
+    </script>
+</body>
+</html>
